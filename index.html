@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chaify</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- User Profile Header -->
+            <div class="sidebar-header">
+                <div class="user-profile">
+                    <div class="avatar user-avatar" id="userAvatar">👤</div>
+                    <div class="user-info">
+                        <span class="user-name" id="userName">You</span>
+                        <span class="user-status">Online</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="icon-btn" title="Status">
+                        <i class="fas fa-circle"></i>
+                    </button>
+                    <button class="icon-btn" title="New chat">
+                        <i class="fas fa-comment"></i>
+                    </button>
+                    <button class="icon-btn" title="Menu">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search or start new chat" id="searchInput">
+                </div>
+            </div>
+
+            <!-- Contacts List -->
+            <div class="contacts-list" id="contactsList">
+                <!-- Contacts will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="chat-area">
+            <!-- Default Screen (when no chat selected) -->
+            <div class="default-screen" id="defaultScreen">
+                <div class="default-content">
+                    <div class="whatsapp-icon">
+                        <i class="fab fa-whatsapp"></i>
+                    </div>
+                    <h2>WhatsApp Web</h2>
+                    <p>Send and receive messages without keeping your phone online.</p>
+                    <p>Use WhatsApp on up to 4 linked devices and 1 phone at the same time.</p>
+                </div>
+            </div>
+
+            <!-- Active Chat -->
+            <div class="active-chat hidden" id="activeChat">
+                <!-- Chat Header -->
+                <div class="chat-header">
+                    <div class="chat-contact-info">
+                        <div class="avatar contact-avatar" id="contactAvatar">👤</div>
+                        <div class="contact-details">
+                            <span class="contact-name" id="contactName">Contact Name</span>
+                            <span class="contact-status" id="contactStatus">click here for contact info</span>
+                        </div>
+                    </div>
+                    <div class="chat-actions">
+                        <button class="icon-btn" title="Video call">
+                            <i class="fas fa-video"></i>
+                        </button>
+                        <button class="icon-btn" title="Voice call">
+                            <i class="fas fa-phone"></i>
+                        </button>
+                        <button class="icon-btn" title="Search">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <button class="icon-btn" title="Menu">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Messages Container -->
+                <div class="messages-container">
+                    <div class="messages-list" id="messagesList">
+                        <!-- Messages will be loaded here -->
+                    </div>
+                    <div class="typing-indicator" id="typingIndicator">
+                        <div class="typing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <span id="typingText"></span>
+                    </div>
+                </div>
+
+                <!-- Message Input -->
+                <div class="message-input-container">
+                    <div class="input-actions">
+                        <button class="icon-btn" title="Emoji">
+                            <i class="far fa-smile"></i>
+                        </button>
+                        <button class="icon-btn" title="Attach file">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                    </div>
+                    <div class="message-input-wrapper">
+                        <input type="text" 
+                               placeholder="Type a message" 
+                               id="messageInput"
+                               maxlength="1000">
+                        <button class="voice-btn" title="Voice message">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                    </div>
+                    <button class="send-btn" id="sendButton" title="Send message">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Setup Modal -->
+        <div class="modal" id="userSetupModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Set up your profile</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="avatar-selector">
+                        <div class="avatar large" id="selectedAvatar">👤</div>
+                    </div>
+                    <div class="avatar-options">
+                        <div class="avatar-option" data-avatar="👤">👤</div>
+                        <div class="avatar-option" data-avatar="👨">👨</div>
+                        <div class="avatar-option" data-avatar="👩">👩</div>
+                        <div class="avatar-option" data-avatar="🧑">🧑</div>
+                        <div class="avatar-option" data-avatar="👨‍💼">👨‍💼</div>
+                        <div class="avatar-option" data-avatar="👩‍🎓">👩‍🎓</div>
+                    </div>
+                    <input type="text" 
+                           id="userNameInput" 
+                           placeholder="Enter your name" 
+                           maxlength="20">
+                </div>
+                <div class="modal-footer">
+                    <button id="startChatting">Start Chatting</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
