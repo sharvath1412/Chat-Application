@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chaify</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --whatsapp-green: #00a884;
+            --whatsapp-dark: #111b21;
+            --whatsapp-chat-bg: #0b141a;
+            --whatsapp-sent: #005c4b;
+            --whatsapp-received: #202c33;
+            --text-primary: #e9edef;
+            --text-secondary: #8696a0;
+            --border-color: #2a3942;
+        }
+
+        body {
+            font-family: cursive;
+            background: var(--whatsapp-dark);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+            background: var(--whatsapp-chat-bg);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 30%;
+            min-width: 300px;
+            background: var(--whatsapp-dark);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 10px 16px;
+            background: var(--whatsapp-dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            background: var(--whatsapp-green);
+        }
+
+        .avatar.large {
+            width: 80px;
+            height: 80px;
+            font-size: 2rem;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .user-status {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        /* Search Box */
+        .search-container {
+            padding: 8px 16px;
+            background: var(--whatsapp-dark);
+        }
+
+        .search-box {
+            position: relative;
+            background: var(--whatsapp-received);
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box i {
+            color: var(--text-secondary);
+            margin-right: 8px;
+        }
+
+        .search-box input {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            width: 100%;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* Contacts List */
+        .contacts-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .contact-item:hover {
+            background: var(--border-color);
+        }
+
+        .contact-item.active {
+            background: var(--border-color);
+        }
+
+        .contact-avatar {
+            margin-right: 12px;
+            background: var(--whatsapp-green);
+        }
+
+        .contact-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .contact-name {
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        .contact-last-message {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .contact-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+
+        .contact-time {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        .message-status {
+            font-size: 0.8rem;
+            color: var(--whatsapp-green);
+        }
+
+        .unread-badge {
+            background: var(--whatsapp-green);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        /* Chat Area */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--whatsapp-chat-bg);
+        }
+
+        .default-screen {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--whatsapp-chat-bg);
+        }
+
+        .default-content {
+            text-align: center;
+            max-width: 500px;
+            padding: 20px;
+        }
+
+        .whatsapp-icon {
+            font-size: 4rem;
+            color: var(--whatsapp-green);
+            margin-bottom: 20px;
+        }
+
+        .default-content h2 {
+            margin-bottom: 16px;
+            font-weight: 300;
+        }
+
+        .default-content p {
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .active-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Chat Header */
+        .chat-header {
+            padding: 10px 16px;
+            background: var(--whatsapp-dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .chat-contact-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .contact-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .contact-name {
+            font-weight: 500;
+        }
+
+        .contact-status {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .chat-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Messages Container */
+        .messages-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.03"><path fill="%2300a884" d="M50 0L100 50L50 100L0 50Z"/></svg>');
+            background-size: 200px;
+        }
+
+        .messages-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .message {
+            max-width: 65%;
+            padding: 8px 12px;
+            border-radius: 8px;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        .message.sent {
+            align-self: flex-end;
+            background: var(--whatsapp-sent);
+            border-top-right-radius: 0;
+        }
+
+        .message.received {
+            align-self: flex-start;
+            background: var(--whatsapp-received);
+            border-top-left-radius: 0;
+        }
+
+        .message-text {
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-align: right;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 4px;
+        }
+
+        .message-status {
+            font-size: 0.6rem;
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 2px;
+        }
+
+        .typing-dots span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--text-secondary);
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* Message Input */
+        .message-input-container {
+            padding: 16px;
+            background: var(--whatsapp-dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .input-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .message-input-wrapper {
+            flex: 1;
+            position: relative;
+            background: var(--whatsapp-received);
+            border-radius: 24px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .message-input-wrapper input {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            width: 100%;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .voice-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .send-btn {
+            background: var(--whatsapp-green);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .send-btn:hover {
+            background: #008f75;
+        }
+
+        .send-btn:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--whatsapp-dark);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .avatar-options {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .avatar-option {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        .avatar-option:hover,
+        .avatar-option.selected {
+            border-color: var(--whatsapp-green);
+        }
+
+        #userNameInput {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--whatsapp-received);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        #userNameInput:focus {
+            border-color: var(--whatsapp-green);
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        #startChatting {
+            background: var(--whatsapp-green);
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 24px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        #startChatting:hover {
+            background: #008f75;
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Scrollbar Styling */
+        .contacts-list::-webkit-scrollbar,
+        .messages-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .contacts-list::-webkit-scrollbar-track,
+        .messages-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .contacts-list::-webkit-scrollbar-thumb,
+        .messages-container::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        .contacts-list::-webkit-scrollbar-thumb:hover,
+        .messages-container::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                min-width: unset;
+            }
+            
+            .active-chat {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 100;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- User Profile Header -->
+            <div class="sidebar-header">
+                <div class="user-profile">
+                    <div class="avatar user-avatar" id="userAvatar">👤</div>
+                    <div class="user-info">
+                        <span class="user-name" id="userName">You</span>
+                        <span class="user-status">Online</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="icon-btn" title="Status">
+                        <i class="fas fa-circle"></i>
+                    </button>
+                    <button class="icon-btn" title="New chat">
+                        <i class="fas fa-comment"></i>
+                    </button>
+                    <button class="icon-btn" title="Menu">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search or start new chat" id="searchInput">
+                </div>
+            </div>
+
+            <!-- Contacts List -->
+            <div class="contacts-list" id="contactsList">
+                <!-- Contacts will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="chat-area">
+            <!-- Default Screen (when no chat selected) -->
+            <div class="default-screen" id="defaultScreen">
+                <div class="default-content">
+                    <div class="whatsapp-icon">
+                        <i class="fab fa-whatsapp"></i>
+                    </div>
+                    <h2>WhatsApp Web</h2>
+                    <p>Send and receive messages without keeping your phone online.</p>
+                    <p>Use WhatsApp on up to 4 linked devices and 1 phone at the same time.</p>
+                </div>
+            </div>
+
+            <!-- Active Chat -->
+            <div class="active-chat hidden" id="activeChat">
+                <!-- Chat Header -->
+                <div class="chat-header">
+                    <div class="chat-contact-info">
+                        <div class="avatar contact-avatar" id="contactAvatar">👤</div>
+                        <div class="contact-details">
+                            <span class="contact-name" id="contactName">Contact Name</span>
+                            <span class="contact-status" id="contactStatus">click here for contact info</span>
+                        </div>
+                    </div>
+                    <div class="chat-actions">
+                        <button class="icon-btn" title="Video call">
+                            <i class="fas fa-video"></i>
+                        </button>
+                        <button class="icon-btn" title="Voice call">
+                            <i class="fas fa-phone"></i>
+                        </button>
+                        <button class="icon-btn" title="Search">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <button class="icon-btn" title="Menu">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Messages Container -->
+                <div class="messages-container">
+                    <div class="messages-list" id="messagesList">
+                        <!-- Messages will be loaded here -->
+                    </div>
+                    <div class="typing-indicator" id="typingIndicator">
+                        <div class="typing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <span id="typingText"></span>
+                    </div>
+                </div>
+
+                <!-- Message Input -->
+                <div class="message-input-container">
+                    <div class="input-actions">
+                        <button class="icon-btn" title="Emoji">
+                            <i class="far fa-smile"></i>
+                        </button>
+                        <button class="icon-btn" title="Attach file">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                    </div>
+                    <div class="message-input-wrapper">
+                        <input type="text" 
+                               placeholder="Type a message" 
+                               id="messageInput"
+                               maxlength="1000">
+                        <button class="voice-btn" title="Voice message">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                    </div>
+                    <button class="send-btn" id="sendButton" title="Send message">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Setup Modal -->
+        <div class="modal" id="userSetupModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Set up your profile</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="avatar-selector">
+                        <div class="avatar large" id="selectedAvatar">👤</div>
+                    </div>
+                    <div class="avatar-options">
+                        <div class="avatar-option" data-avatar="👤">👤</div>
+                        <div class="avatar-option" data-avatar="👨">👨</div>
+                        <div class="avatar-option" data-avatar="👩">👩</div>
+                        <div class="avatar-option" data-avatar="🧑">🧑</div>
+                        <div class="avatar-option" data-avatar="👨‍💼">👨‍💼</div>
+                        <div class="avatar-option" data-avatar="👩‍🎓">👩‍🎓</div>
+                    </div>
+                    <input type="text" 
+                           id="userNameInput" 
+                           placeholder="Enter your name" 
+                           maxlength="20">
+                </div>
+                <div class="modal-footer">
+                    <button id="startChatting">Start Chatting</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script>
+        // Sample contacts data
+        const sampleContacts = [
+            { id: 1, name: "Alice Johnson", avatar: "👩", lastMessage: "Hey there! How are you?", time: "10:30 AM", unread: 2 },
+            { id: 2, name: "Bob Smith", avatar: "👨", lastMessage: "Meeting at 3 PM tomorrow", time: "9:15 AM", unread: 0 },
+            { id: 3, name: "Carol Davis", avatar: "👩‍🎓", lastMessage: "Thanks for your help!", time: "Yesterday", unread: 1 },
+            { id: 4, name: "David Wilson", avatar: "👨‍💼", lastMessage: "See you later!", time: "Yesterday", unread: 0 },
+            { id: 5, name: "Emma Brown", avatar: "🧑", lastMessage: "Did you see the new movie?", time: "12/25/24", unread: 0 }
+        ];
+
+        // Sample messages for each contact
+        const sampleMessages = {
+            1: [
+                { id: 1, text: "Hello!", time: "10:25 AM", sender: "them", status: "delivered" },
+                { id: 2, text: "Hi Alice! How are you doing?", time: "10:26 AM", sender: "me", status: "read" },
+                { id: 3, text: "I'm good! Just working on some projects. How about you?", time: "10:28 AM", sender: "them", status: "delivered" },
+                { id: 4, text: "That's great! I'm doing well too. Working from home today.", time: "10:30 AM", sender: "me", status: "read" }
+            ],
+            2: [
+                { id: 1, text: "Don't forget about the meeting tomorrow", time: "9:10 AM", sender: "them", status: "delivered" },
+                { id: 2, text: "Thanks for the reminder! I'll be there.", time: "9:12 AM", sender: "me", status: "read" }
+            ],
+            3: [
+                { id: 1, text: "I really appreciate your help with the project!", time: "Yesterday", sender: "them", status: "delivered" },
+                { id: 2, text: "No problem! Happy to help anytime.", time: "Yesterday", sender: "me", status: "read" }
+            ]
+        };
+
+        class ChatApp {
+            constructor() {
+                this.currentUser = null;
+                this.currentContact = null;
+                this.contacts = sampleContacts;
+                this.messages = sampleMessages;
+                this.socket = null;
+                
+                this.initializeApp();
+            }
+
+            initializeApp() {
+                this.showUserSetup();
+                this.bindEvents();
+                this.loadContacts();
+                this.initializeSocket();
+            }
+
+            showUserSetup() {
+                const modal = document.getElementById('userSetupModal');
+                modal.style.display = 'flex';
+
+                // Avatar selection
+                document.querySelectorAll('.avatar-option').forEach(option => {
+                    option.addEventListener('click', () => {
+                        document.querySelectorAll('.avatar-option').forEach(opt => opt.classList.remove('selected'));
+                        option.classList.add('selected');
+                        document.getElementById('selectedAvatar').textContent = option.textContent;
+                    });
+                });
+
+                // Start chatting button
+                document.getElementById('startChatting').addEventListener('click', () => {
+                    const userName = document.getElementById('userNameInput').value.trim();
+                    const selectedAvatar = document.getElementById('selectedAvatar').textContent;
+
+                    if (userName) {
+                        this.currentUser = {
+                            name: userName,
+                            avatar: selectedAvatar
+                        };
+                        this.updateUserProfile();
+                        modal.style.display = 'none';
+                    } else {
+                        alert('Please enter your name');
+                    }
+                });
+            }
+
+            bindEvents() {
+                // Search functionality
+                document.getElementById('searchInput').addEventListener('input', (e) => {
+                    this.filterContacts(e.target.value);
+                });
+
+                // Message input
+                document.getElementById('messageInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.sendMessage();
+                    }
+                });
+
+                document.getElementById('sendButton').addEventListener('click', () => {
+                    this.sendMessage();
+                });
+
+                // New chat button
+                document.querySelector('.header-actions .fa-comment').closest('.icon-btn').addEventListener('click', () => {
+                    this.createNewChat();
+                });
+            }
+
+            initializeSocket() {
+                // Connect to Socket.IO server
+                this.socket = io('http://localhost:3000', {
+                    transports: ['websocket', 'polling']
+                });
+
+                this.socket.on('connect', () => {
+                    console.log('Connected to server');
+                    if (this.currentUser) {
+                        this.socket.emit('user_joined', this.currentUser);
+                    }
+                });
+
+                this.socket.on('receiveMessage', (data) => {
+                    if (data.contactId === this.currentContact?.id) {
+                        this.addMessageToChat(data.message, 'them');
+                        this.scrollToBottom();
+                    }
+                    this.updateContactLastMessage(data.contactId, data.message.text);
+                });
+
+                this.socket.on('userTyping', (data) => {
+                    this.showTypingIndicator(data.contactId, data.userName);
+                });
+
+                this.socket.on('userStopTyping', (data) => {
+                    this.hideTypingIndicator(data.contactId);
+                });
+
+                this.socket.on('disconnect', () => {
+                    console.log('Disconnected from server');
+                });
+            }
+
+            loadContacts() {
+                const contactsList = document.getElementById('contactsList');
+                contactsList.innerHTML = '';
+
+                this.contacts.forEach(contact => {
+                    const contactElement = this.createContactElement(contact);
+                    contactsList.appendChild(contactElement);
+                });
+            }
+
+            createContactElement(contact) {
+                const div = document.createElement('div');
+                div.className = 'contact-item';
+                div.innerHTML = `
+                    <div class="avatar contact-avatar">${contact.avatar}</div>
+                    <div class="contact-details">
+                        <span class="contact-name">${contact.name}</span>
+                        <span class="contact-last-message">${contact.lastMessage}</span>
+                    </div>
+                    <div class="contact-meta">
+                        <span class="contact-time">${contact.time}</span>
+                        ${contact.unread > 0 ? `<div class="unread-badge">${contact.unread}</div>` : ''}
+                    </div>
+                `;
+
+                div.addEventListener('click', () => {
+                    this.selectContact(contact);
+                });
+
+                return div;
+            }
+
+            selectContact(contact) {
+                // Update active state
+                document.querySelectorAll('.contact-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                event.currentTarget.classList.add('active');
+
+                this.currentContact = contact;
+                this.showActiveChat();
+                this.loadMessages(contact.id);
+                this.updateChatHeader(contact);
+            }
+
+            showActiveChat() {
+                document.getElementById('defaultScreen').classList.add('hidden');
+                document.getElementById('activeChat').classList.remove('hidden');
+            }
+
+            loadMessages(contactId) {
+                const messagesList = document.getElementById('messagesList');
+                messagesList.innerHTML = '';
+
+                const messages = this.messages[contactId] || [];
+                messages.forEach(message => {
+                    this.addMessageToChat(message, message.sender);
+                });
+
+                this.scrollToBottom();
+            }
+
+            addMessageToChat(message, sender) {
+                const messagesList = document.getElementById('messagesList');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender === 'me' ? 'sent' : 'received'}`;
+                
+                const time = message.time || moment().format('h:mm A');
+                const statusIcon = sender === 'me' ? 
+                    (message.status === 'read' ? '✓✓' : '✓') : '';
+
+                messageDiv.innerHTML = `
+                    <div class="message-text">${message.text}</div>
+                    <div class="message-time">
+                        ${time}
+                        ${statusIcon ? `<span class="message-status">${statusIcon}</span>` : ''}
+                    </div>
+                `;
+
+                messagesList.appendChild(messageDiv);
+            }
+
+            updateChatHeader(contact) {
+                document.getElementById('contactName').textContent = contact.name;
+                document.getElementById('contactAvatar').textContent = contact.avatar;
+                document.getElementById('contactStatus').textContent = 'Online';
+            }
+
+            updateUserProfile() {
+                document.getElementById('userName').textContent = this.currentUser.name;
+                document.getElementById('userAvatar').textContent = this.currentUser.avatar;
+            }
+
+            sendMessage() {
+                const messageInput = document.getElementById('messageInput');
+                const text = messageInput.value.trim();
+
+                if (text && this.currentContact) {
+                    const message = {
+                        id: Date.now(),
+                        text: text,
+                        time: moment().format('h:mm A'),
+                        sender: 'me',
+                        status: 'sent'
+                    };
+
+                    // Add message to UI immediately
+                    this.addMessageToChat(message, 'me');
+                    
+                    // Simulate message delivery
+                    setTimeout(() => {
+                        this.updateMessageStatus(message.id, 'delivered');
+                    }, 1000);
+
+                    // Simulate message read
+                    setTimeout(() => {
+                        this.updateMessageStatus(message.id, 'read');
+                    }, 3000);
+
+                    // Send via socket
+                    if (this.socket) {
+                        this.socket.emit('sendMessage', {
+                            contactId: this.currentContact.id,
+                            message: message
+                        });
+                    }
+
+                    // Update contact last message
+                    this.updateContactLastMessage(this.currentContact.id, text);
+
+                    // Clear input and scroll
+                    messageInput.value = '';
+                    this.scrollToBottom();
+                }
+            }
+
+            updateMessageStatus(messageId, status) {
+                const messages = document.querySelectorAll('.message.sent');
+                messages.forEach(message => {
+                    const statusElement = message.querySelector('.message-status');
+                    if (statusElement) {
+                        statusElement.textContent = status === 'read' ? '✓✓' : '✓';
+                    }
+                });
+            }
+
+            updateContactLastMessage(contactId, message) {
+                const contact = this.contacts.find(c => c.id === contactId);
+                if (contact) {
+                    contact.lastMessage = message;
+                    contact.time = moment().format('h:mm A');
+                    this.loadContacts();
+                }
+            }
+
+            scrollToBottom() {
+                const messagesContainer = document.querySelector('.messages-container');
+                setTimeout(() => {
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, 100);
+            }
+
+            filterContacts(searchTerm) {
+                const filteredContacts = this.contacts.filter(contact =>
+                    contact.name.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+                
+                const contactsList = document.getElementById('contactsList');
+                contactsList.innerHTML = '';
+                
+                filteredContacts.forEach(contact => {
+                    const contactElement = this.createContactElement(contact);
+                    contactsList.appendChild(contactElement);
+                });
+            }
+
+            showTypingIndicator(contactId, userName) {
+                if (contactId === this.currentContact?.id) {
+                    const indicator = document.getElementById('typingIndicator');
+                    const typingText = document.getElementById('typingText');
+                    typingText.textContent = `${userName} is typing...`;
+                    indicator.style.display = 'flex';
+                    this.scrollToBottom();
+                }
+            }
+
+            hideTypingIndicator(contactId) {
+                if (contactId === this.currentContact?.id) {
+                    const indicator = document.getElementById('typingIndicator');
+                    indicator.style.display = 'none';
+                }
+            }
+
+            createNewChat() {
+                const contactName = prompt('Enter contact name:');
+                if (contactName) {
+                    const newContact = {
+                        id: Date.now(),
+                        name: contactName,
+                        avatar: '👤',
+                        lastMessage: 'Say hello!',
+                        time: 'Just now',
+                        unread: 0
+                    };
+                    this.contacts.unshift(newContact);
+                    this.loadContacts();
+                    this.selectContact(newContact);
+                }
+            }
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new ChatApp();
+        });
+    </script>
+</body>
+</html>
